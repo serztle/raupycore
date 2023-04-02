@@ -1,0 +1,8 @@
+#!/bin/sh
+mysql -h db -uroot    -ptrinity            < /root/sql/create/create_mysql.sql
+mysql -h db -utrinity -ptrinity auth       < /root/sql/base/auth_database.sql
+mysql -h db -utrinity -ptrinity characters < /root/sql/base/characters_database.sql
+mysql -h db -utrinity -ptrinity world      < /root/sql/base/dev/world_database.sql
+mysql -h db -utrinity -ptrinity hotfixes   < /root/sql/base/dev/hotfixes_database.sql
+mysql -h db -utrinity -ptrinity world      < /rootsql/updates/world/master/*.sql
+mysql -h db -utrinity -ptrinity hotfixes   < /root/sql/updates/hotfixes/master/*.sql

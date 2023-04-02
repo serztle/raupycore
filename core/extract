@@ -1,0 +1,6 @@
+#!/bin/sh
+mapextractor
+vmap4extractor
+vmap4assembler
+mv Buildings Buildings.backup
+mmaps_generator

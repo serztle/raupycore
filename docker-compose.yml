@@ -1,0 +1,59 @@
+# derived from: https://github.com/azerothcore/azerothcore-wotlk/blob/master/docker-compose.yml
+
+version: "3"
+services:
+  db:
+    image: mysql:5.7.41
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:3306:3306
+    environment:
+      - MYSQL_USER=trinity
+      - MYSQL_PASSWORD=trinity
+      - MYSQL_ROOT_PASSWORD=trinity
+    volumes:
+      - ./env/db:/var/lib/mysql
+  init:
+    build:
+      context: core/
+    restart: "no"
+    command: /usr/local/bin/init
+  worldserver:
+    build:
+      context: core/
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:8085:8085
+      - 127.0.0.1:7878:7878
+    environment:
+      - LD_LIBRARY_PATH=/usr/local/mysql/lib
+    volumes:
+      - ./env/etc:/usr/local/etc
+      - ./env/logs:/usr/local/logs
+      - ./env/cameras:/usr/local/bin/cameras
+      - ./env/dbc:/usr/local/bin/dbc
+      - ./env/maps:/usr/local/bin/maps
+      - ./env/vmaps:/usr/local/bin/vmaps
+      - ./env/mmaps:/usr/local/bin/mmaps
+    command: worldserver
+    depends_on:
+      db:
+        condition: service_healthy
+      init:
+        condition: service_completed_successfully
+  bnetserver:
+    build:
+      context: core/
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:3724:3724
+    environment:
+      - LD_LIBRARY_PATH=/usr/local/mysql/lib
+    volumes:
+      - ./env/etc:/usr/local/etc
+    command: bnetserver
+    depends_on:
+      db:
+        condition: service_healthy
+      init:
+        condition: service_completed_successfully

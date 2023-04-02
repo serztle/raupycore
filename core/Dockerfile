@@ -20,6 +20,23 @@ RUN cd /root/mysql-5.7.41 && sed -i 's/IF(NOT BOOST_MINOR_VERSION EQUAL 59)/IF(N
 RUN cd /root/mysql-5.7.41 && cmake -DWITHOUT_SERVER=ON -DWITH_SSL=/usr/local/ssl -DOPENSSL_INCLUDE_DIR=/usr/local/ssl/include .
 RUN cd /root/mysql-5.7.41 && make -j 16 && make install
 
+# NOTE: Maybe this core is more useful: https://github.com/AshamaneProject/AshamaneCore/releases/tag/ADB_735.10
 RUN cd /root && git clone -b TDB735.00 --depth 1 https://github.com/TrinityCore/TrinityCore.git
 RUN cd /root/TrinityCore && mkdir build && cd build && cmake -DOPENSSL_SSL_LIBRARIES=/usr/local/ssl/lib/libssl.so -DOPENSSL_CRYPTO_LIBRARIES=/usr/local/ssl/lib/libcrypto.so -DOPENSSL_INCLUDE_DIR=/usr/local/ssl/include ../ && make -j 16 && make install
-# https://github.com/AshamaneProject/AshamaneCore/releases/tag/ADB_735.10
+
+RUN cp /root/TrinityCore/src/server/worldserver/worldserver.conf.dist /usr/local/etc/worldserver.conf
+RUN cp /root/TrinityCore/src/server/bnetserver/bnetserver.conf.dist /usr/local/etc/bnetserver.conf
+
+RUN mkdir /root/sql
+RUN cp /root/TrinityCore/sql/base /root/sql/base -R
+RUN cp /root/TrinityCore/sql/create /root/sql/create -R
+RUN cp /root/TrinityCore/sql/custom /root/sql/custom -R
+RUN cp /root/TrinityCore/sql/updates /root/sql/updates -R
+
+RUN rm -rf /root/mysql-5.7.41
+RUN rm -rf /root/openssl-1.0.2s
+RUN rm -rf /root/TrinityCore
+
+RUN mkdir /usr/local/logs
+COPY extract /usr/local/bin/extract
+COPY init /usr/local/bin/init
