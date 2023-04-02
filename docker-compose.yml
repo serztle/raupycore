@@ -18,6 +18,9 @@ services:
       context: core/
     restart: "no"
     command: /usr/local/bin/init
+    depends_on:
+      db:
+        condition: service_healthy
   worldserver:
     build:
       context: core/

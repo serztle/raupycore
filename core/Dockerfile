@@ -22,6 +22,7 @@ RUN cd /root/mysql-5.7.41 && make -j 16 && make install
 
 # NOTE: Maybe this core is more useful: https://github.com/AshamaneProject/AshamaneCore/releases/tag/ADB_735.10
 RUN cd /root && git clone -b TDB735.00 --depth 1 https://github.com/TrinityCore/TrinityCore.git
+COPY Banner.cpp /root/TrinityCore/src/common/Banner.cpp
 RUN cd /root/TrinityCore && mkdir build && cd build && cmake -DOPENSSL_SSL_LIBRARIES=/usr/local/ssl/lib/libssl.so -DOPENSSL_CRYPTO_LIBRARIES=/usr/local/ssl/lib/libcrypto.so -DOPENSSL_INCLUDE_DIR=/usr/local/ssl/include ../ && make -j 16 && make install
 
 RUN cp /root/TrinityCore/src/server/worldserver/worldserver.conf.dist /usr/local/etc/worldserver.conf
