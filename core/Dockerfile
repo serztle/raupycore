@@ -44,4 +44,3 @@ RUN rm -rf /root/TDB_full_735.00_2018_02_19
 RUN rm /root/mysql-5.7.41.tar.gz
 RUN rm /root/openssl-1.0.2s.tar.gz
 RUN rm -rf /root/TrinityCore/build
-RUN rm -rf /root/TrinityCore/sql/old
