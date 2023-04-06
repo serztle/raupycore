@@ -33,7 +33,6 @@ RUN rm -rf /root/openssl-1.0.2s
 
 RUN mkdir /usr/local/logs
 COPY extract /usr/local/bin/extract
-COPY init /usr/local/bin/init
 
 RUN wget https://github.com/TrinityCore/TrinityCore/releases/download/TDB735.00/TDB_full_735.00_2018_02_19.7z -O /root/tdb.7z
 RUN cd /root && 7zr x tdb.7z
@@ -41,3 +40,8 @@ RUN cp /root/TDB_full_735.00_2018_02_19/TDB_world_735.00_2018_02_19.sql /usr/loc
 RUN cp /root/TDB_full_735.00_2018_02_19/TDB_hotfixes_735.00_2018_02_19.sql /usr/local/bin/
 RUN rm -rf /root/tdb.7z
 RUN rm -rf /root/TDB_full_735.00_2018_02_19
+
+RUN rm /root/mysql-5.7.41.tar.gz
+RUN rm /root/openssl-1.0.2s.tar.gz
+RUN rm -rf /root/TrinityCore/build
+RUN rm -rf /root/TrinityCore/sql/old
