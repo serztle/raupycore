@@ -13,14 +13,12 @@ services:
       - MYSQL_ROOT_PASSWORD=trinity
     volumes:
       - ./env/db:/var/lib/mysql
-  init:
-    build:
-      context: core/
-    restart: "no"
-    command: /usr/local/bin/init
-    depends_on:
-      db:
-        condition: service_healthy
+      - ./env/dbinit:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=trinity --execute \"SHOW DATABASES;\""
+      interval: 5s
+      timeout: 10s
+      retries: 40
   worldserver:
     build:
       context: core/
@@ -38,12 +36,11 @@ services:
       - ./env/maps:/usr/local/bin/maps
       - ./env/vmaps:/usr/local/bin/vmaps
       - ./env/mmaps:/usr/local/bin/mmaps
+    working_dir: /usr/local/bin
     command: worldserver
     depends_on:
       db:
         condition: service_healthy
-      init:
-        condition: service_completed_successfully
   bnetserver:
     build:
       context: core/
@@ -54,9 +51,8 @@ services:
       - LD_LIBRARY_PATH=/usr/local/mysql/lib
     volumes:
       - ./env/etc:/usr/local/etc
+    working_dir: /usr/local/bin
     command: bnetserver
     depends_on:
       db:
         condition: service_healthy
-      init:
-        condition: service_completed_successfully

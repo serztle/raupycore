@@ -28,16 +28,16 @@ RUN cd /root/TrinityCore && mkdir build && cd build && cmake -DOPENSSL_SSL_LIBRA
 RUN cp /root/TrinityCore/src/server/worldserver/worldserver.conf.dist /usr/local/etc/worldserver.conf
 RUN cp /root/TrinityCore/src/server/bnetserver/bnetserver.conf.dist /usr/local/etc/bnetserver.conf
 
-RUN mkdir /root/sql
-RUN cp /root/TrinityCore/sql/base /root/sql/base -R
-RUN cp /root/TrinityCore/sql/create /root/sql/create -R
-RUN cp /root/TrinityCore/sql/custom /root/sql/custom -R
-RUN cp /root/TrinityCore/sql/updates /root/sql/updates -R
-
 RUN rm -rf /root/mysql-5.7.41
 RUN rm -rf /root/openssl-1.0.2s
-RUN rm -rf /root/TrinityCore
 
 RUN mkdir /usr/local/logs
 COPY extract /usr/local/bin/extract
 COPY init /usr/local/bin/init
+
+RUN wget https://github.com/TrinityCore/TrinityCore/releases/download/TDB735.00/TDB_full_735.00_2018_02_19.7z -O /root/tdb.7z
+RUN cd /root && 7zr x tdb.7z
+RUN cp /root/TDB_full_735.00_2018_02_19/TDB_world_735.00_2018_02_19.sql /usr/local/bin/
+RUN cp /root/TDB_full_735.00_2018_02_19/TDB_hotfixes_735.00_2018_02_19.sql /usr/local/bin/
+RUN rm -rf /root/tdb.7z
+RUN rm -rf /root/TDB_full_735.00_2018_02_19
