@@ -20,27 +20,24 @@ RUN cd /root/mysql-5.7.41 && sed -i 's/IF(NOT BOOST_MINOR_VERSION EQUAL 59)/IF(N
 RUN cd /root/mysql-5.7.41 && cmake -DWITHOUT_SERVER=ON -DWITH_SSL=/usr/local/ssl -DOPENSSL_INCLUDE_DIR=/usr/local/ssl/include .
 RUN cd /root/mysql-5.7.41 && make -j 16 && make install
 
-# NOTE: Maybe this core is more useful: https://github.com/AshamaneProject/AshamaneCore/releases/tag/ADB_735.10
-RUN cd /root && git clone -b TDB735.00 --depth 1 https://github.com/TrinityCore/TrinityCore.git
-COPY Banner.cpp /root/TrinityCore/src/common/Banner.cpp
-RUN cd /root/TrinityCore && mkdir build && cd build && cmake -DOPENSSL_SSL_LIBRARIES=/usr/local/ssl/lib/libssl.so -DOPENSSL_CRYPTO_LIBRARIES=/usr/local/ssl/lib/libcrypto.so -DOPENSSL_INCLUDE_DIR=/usr/local/ssl/include ../ && make -j 16 && make install
-
-RUN cp /root/TrinityCore/src/server/worldserver/worldserver.conf.dist /usr/local/etc/worldserver.conf
-RUN cp /root/TrinityCore/src/server/bnetserver/bnetserver.conf.dist /usr/local/etc/bnetserver.conf
-
-RUN rm -rf /root/mysql-5.7.41
-RUN rm -rf /root/openssl-1.0.2s
+# RUN cd /root && git clone -b TDB735.00 --depth 1 https://github.com/TrinityCore/TrinityCore.git
+RUN cd /root && git clone -b ADB_735.00 --depth 1 https://github.com/AshamaneProject/AshamaneCore
+COPY Banner.cpp /root/AshamaneCore/src/common/Banner.cpp
+RUN cd /root/AshamaneCore && mkdir build && cd build && cmake -DOPENSSL_SSL_LIBRARIES=/usr/local/ssl/lib/libssl.so -DOPENSSL_CRYPTO_LIBRARIES=/usr/local/ssl/lib/libcrypto.so -DOPENSSL_INCLUDE_DIR=/usr/local/ssl/include ../ && make -j 16 && make install
 
 RUN mkdir /usr/local/logs
-COPY extract /usr/local/bin/extract
 
-RUN wget https://github.com/TrinityCore/TrinityCore/releases/download/TDB735.00/TDB_full_735.00_2018_02_19.7z -O /root/tdb.7z
-RUN cd /root && 7zr x tdb.7z
-RUN cp /root/TDB_full_735.00_2018_02_19/TDB_world_735.00_2018_02_19.sql /usr/local/bin/
-RUN cp /root/TDB_full_735.00_2018_02_19/TDB_hotfixes_735.00_2018_02_19.sql /usr/local/bin/
-RUN rm -rf /root/tdb.7z
-RUN rm -rf /root/TDB_full_735.00_2018_02_19
+# RUN wget https://github.com/TrinityCore/TrinityCore/releases/download/TDB735.00/TDB_full_735.00_2018_02_19.7z -O /root/tdb.7z
+RUN wget https://github.com/AshamaneProject/AshamaneCore/releases/download/ADB_735.00/ADB_735.00.zip -O /root/ac.zip
+RUN apt-get install -yq unzip
+RUN cd /root && unzip ac.zip
+RUN mv /root/*.sql /usr/local/bin/
 
 RUN rm /root/mysql-5.7.41.tar.gz
 RUN rm /root/openssl-1.0.2s.tar.gz
-RUN rm -rf /root/TrinityCore/build
+RUN rm -rf /root/mysql-5.7.41
+RUN rm -rf /root/openssl-1.0.2s
+RUN rm -rf /root/ac.zip
+RUN rm -rf /root/AshamaneCore/build
+
+COPY extract /usr/local/bin/extract
