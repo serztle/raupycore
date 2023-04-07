@@ -20,6 +20,8 @@ services:
       timeout: 10s
       retries: 40
   worldserver:
+    stdin_open: true
+    tty: true
     build:
       context: core/
     restart: unless-stopped
@@ -36,17 +38,21 @@ services:
       - ./env/maps:/usr/local/bin/maps
       - ./env/vmaps:/usr/local/bin/vmaps
       - ./env/mmaps:/usr/local/bin/mmaps
+      - ./env/gt:/usr/local/bin/gt
     working_dir: /usr/local/bin
     command: worldserver
     depends_on:
       db:
         condition: service_healthy
   bnetserver:
+    stdin_open: true
+    tty: true
     build:
       context: core/
     restart: unless-stopped
     ports:
-      - 127.0.0.1:3724:3724
+      - 127.0.0.1:1119:1119
+      - 127.0.0.1:8081:8081
     environment:
       - LD_LIBRARY_PATH=/usr/local/mysql/lib
     volumes:
