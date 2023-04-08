@@ -41,6 +41,9 @@ RUN cp /root/TDB_full_735.00_2018_02_19/TDB_hotfixes_735.00_2018_02_19.sql /usr/
 RUN rm -rf /root/tdb.7z
 RUN rm -rf /root/TDB_full_735.00_2018_02_19
 
+COPY WorldSocket.cpp /root/TrinityCore/src/server/game/Server/WorldSocket.cpp
+RUN cd /root/TrinityCore/build && make -j 16 && make install
+
 RUN rm /root/mysql-5.7.41.tar.gz
 RUN rm /root/openssl-1.0.2s.tar.gz
 RUN rm -rf /root/TrinityCore/build
