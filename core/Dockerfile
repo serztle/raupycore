@@ -21,7 +21,7 @@ RUN cd /root/mysql-5.7.41 && cmake -DWITHOUT_SERVER=ON -DWITH_SSL=/usr/local/ssl
 RUN cd /root/mysql-5.7.41 && make -j 16 && make install
 
 # RUN cd /root && git clone -b TDB735.00 --depth 1 https://github.com/TrinityCore/TrinityCore.git
-RUN cd /root && git clone -b ADB_735.00 --depth 1 https://github.com/AshamaneProject/AshamaneCore
+RUN cd /root && git clone -b legion --depth 1 https://github.com/AshamaneProject/AshamaneCore
 COPY Banner.cpp /root/AshamaneCore/src/common/Banner.cpp
 RUN cd /root/AshamaneCore && mkdir build && cd build && cmake -DOPENSSL_SSL_LIBRARIES=/usr/local/ssl/lib/libssl.so -DOPENSSL_CRYPTO_LIBRARIES=/usr/local/ssl/lib/libcrypto.so -DOPENSSL_INCLUDE_DIR=/usr/local/ssl/include ../ && make -j 16 && make install
 
