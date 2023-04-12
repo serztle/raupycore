@@ -30,10 +30,13 @@ services:
       context: core/
     restart: unless-stopped
     ports:
+      - 127.0.0.1:8082:8082
       - 127.0.0.1:8085:8085
+      - 127.0.0.1:8086:8086
+      - 127.0.0.1:3443:3443
       - 127.0.0.1:7878:7878
     environment:
-      - LD_LIBRARY_PATH=/usr/local/mysql/lib
+      - LD_LIBRARY_PATH=/usr/local/mysql/lib:/usr/local/ssl/lib
     volumes:
       - ./env/etc:/usr/local/etc
       - ./env/logs:/usr/local/logs
@@ -62,7 +65,7 @@ services:
       - 127.0.0.1:1119:1119
       - 127.0.0.1:8081:8081
     environment:
-      - LD_LIBRARY_PATH=/usr/local/mysql/lib
+      - LD_LIBRARY_PATH=/usr/local/mysql/lib:/usr/local/ssl/lib
     volumes:
       - ./env/etc:/usr/local/etc
     ulimits:

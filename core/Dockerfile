@@ -1,49 +1,28 @@
+FROM ubuntu:18.04 as build
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+COPY install /install
+RUN /install
+
+COPY build_openssl /build_openssl
+RUN /build_openssl
+
+COPY build_mysql /build_mysql
+RUN /build_mysql
+
+COPY Banner.cpp /Banner.cpp
+COPY build_ashamane /build_ashamane
+RUN /build_ashamane
+
 FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update -yq
-RUN apt-get install -yq git clang cmake make gcc g++ libbz2-dev libreadline-dev libncurses-dev libboost-all-dev p7zip
-RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
-RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang 100
-
-RUN apt-get install -yq curl
-RUN cd /root && curl https://www.openssl.org/source/openssl-1.0.2s.tar.gz > openssl-1.0.2s.tar.gz
-RUN cd /root && tar xvfz openssl-1.0.2s.tar.gz
-RUN cd /root/openssl-1.0.2s && ./config shared --prefix=/usr/local/ssl && make -j 16 && make install
-
-RUN apt-get install -yq wget
-RUN cd /root && wget https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.7.41.tar.gz
-RUN cd /root && tar xvfz mysql-5.7.41.tar.gz
-RUN cd /root/mysql-5.7.41 && rm /usr/local/ssl/lib/*.a
-RUN cd /root/mysql-5.7.41 && sed -i 's/IF(NOT BOOST_MINOR_VERSION EQUAL 59)/IF(NOT BOOST_MINOR_VERSION EQUAL 65)/' cmake/boost.cmake
-RUN cd /root/mysql-5.7.41 && cmake -DWITHOUT_SERVER=ON -DWITH_SSL=/usr/local/ssl -DOPENSSL_INCLUDE_DIR=/usr/local/ssl/include .
-RUN cd /root/mysql-5.7.41 && make -j 16 && make install
-
-# NOTE: Maybe this core is more useful: https://github.com/AshamaneProject/AshamaneCore/releases/tag/ADB_735.10
-RUN cd /root && git clone -b TDB735.00 --depth 1 https://github.com/TrinityCore/TrinityCore.git
-COPY Banner.cpp /root/TrinityCore/src/common/Banner.cpp
-RUN cd /root/TrinityCore && mkdir build && cd build && cmake -DOPENSSL_SSL_LIBRARIES=/usr/local/ssl/lib/libssl.so -DOPENSSL_CRYPTO_LIBRARIES=/usr/local/ssl/lib/libcrypto.so -DOPENSSL_INCLUDE_DIR=/usr/local/ssl/include ../ && make -j 16 && make install
-
-RUN cp /root/TrinityCore/src/server/worldserver/worldserver.conf.dist /usr/local/etc/worldserver.conf
-RUN cp /root/TrinityCore/src/server/bnetserver/bnetserver.conf.dist /usr/local/etc/bnetserver.conf
-
-RUN rm -rf /root/mysql-5.7.41
-RUN rm -rf /root/openssl-1.0.2s
-
+RUN apt-get update -yq && \
+    apt-get install -yq libatomic1 libreadline7 libboost-system1.65.1 libboost-filesystem1.65.1 libboost-program-options1.65.1 libboost-iostreams1.65.1 libboost-thread1.65.1 && \
+    rm -rf /var/lib/apt/lists/*
 RUN mkdir /usr/local/logs
+COPY --from=build /AshamaneCore /AshamaneCore
+COPY --from=build /usr/local /usr/local
 COPY extract /usr/local/bin/extract
-
-RUN wget https://github.com/TrinityCore/TrinityCore/releases/download/TDB735.00/TDB_full_735.00_2018_02_19.7z -O /root/tdb.7z
-RUN cd /root && 7zr x tdb.7z
-RUN cp /root/TDB_full_735.00_2018_02_19/TDB_world_735.00_2018_02_19.sql /usr/local/bin/
-RUN cp /root/TDB_full_735.00_2018_02_19/TDB_hotfixes_735.00_2018_02_19.sql /usr/local/bin/
-RUN rm -rf /root/tdb.7z
-RUN rm -rf /root/TDB_full_735.00_2018_02_19
-
-COPY WorldSocket.cpp /root/TrinityCore/src/server/game/Server/WorldSocket.cpp
-RUN cd /root/TrinityCore/build && make -j 16 && make install
-
-RUN rm /root/mysql-5.7.41.tar.gz
-RUN rm /root/openssl-1.0.2s.tar.gz
-RUN rm -rf /root/TrinityCore/build

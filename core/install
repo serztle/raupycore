@@ -1,0 +1,7 @@
+#!/bin/sh
+set -ex
+apt-get update -yq
+apt-get install -yq git clang cmake make gcc g++ libbz2-dev libreadline-dev libncurses-dev libboost-all-dev p7zip wget unzip curl
+update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
+update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang 100
+rm -rf /var/lib/apt/lists/*

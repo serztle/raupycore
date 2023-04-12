@@ -1,0 +1,12 @@
+#!/bin/sh
+set -ex
+wget https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.7.41.tar.gz
+tar xvfz mysql-5.7.41.tar.gz
+cd mysql-5.7.41
+rm /usr/local/ssl/lib/*.a
+sed -i 's/IF(NOT BOOST_MINOR_VERSION EQUAL 59)/IF(NOT BOOST_MINOR_VERSION EQUAL 65)/' cmake/boost.cmake
+cmake -DWITHOUT_SERVER=ON -DWITH_SSL=/usr/local/ssl -DOPENSSL_INCLUDE_DIR=/usr/local/ssl/include .
+make -j `nproc`
+make install
+rm -rf mysql-5.7.41
+rm ../mysql-5.7.41.tar.gz
