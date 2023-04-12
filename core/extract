@@ -1,6 +1,36 @@
 #!/bin/sh
+set -ex
+
+test -f .extracted && exit 0
+
+rm -rf cameras
+rm -rf dbc
+rm -rf maps
+rm -rf vmaps
+rm -rf mmaps
+rm -rf gt
+
 mapextractor
 vmap4extractor
 vmap4assembler
-mv Buildings Buildings.backup
+rm -rf Buildings
 mmaps_generator
+
+mv maps/* /usr/local/bin/maps/
+mv vmaps/* /usr/local/bin/vmaps/
+
+mv cameras/* /usr/local/bin/cameras/
+mv dbc/*     /usr/local/bin/dbc/
+mv maps/*    /usr/local/bin/maps/
+mv vmaps/*   /usr/local/bin/vmaps/
+mv mmaps/*   /usr/local/bin/mmaps/
+mv gt/*      /usr/local/bin/gt/
+
+rmdir cameras/*
+rmdir dbc/*
+rmdir maps/*
+rmdir vmaps/*
+rmdir mmaps/*
+rmdir gt/*
+
+touch .extracted

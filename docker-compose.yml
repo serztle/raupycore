@@ -23,6 +23,27 @@ services:
       interval: 5s
       timeout: 10s
       retries: 40
+  extract:
+    build:
+      context: core/
+    environment:
+      - LD_LIBRARY_PATH=/usr/local/mysql/lib:/usr/local/ssl/lib
+    volumes:
+      - ${CLIENT_DIRECTORY}:/pwd
+      - ./env/etc:/usr/local/etc
+      - ./env/logs:/usr/local/logs
+      - ./env/cameras:/usr/local/bin/cameras
+      - ./env/dbc:/usr/local/bin/dbc
+      - ./env/maps:/usr/local/bin/maps
+      - ./env/vmaps:/usr/local/bin/vmaps
+      - ./env/mmaps:/usr/local/bin/mmaps
+      - ./env/gt:/usr/local/bin/gt
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    working_dir: /pwd
+    command: extract
   worldserver:
     stdin_open: true
     tty: true
@@ -55,6 +76,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      extract:
+        condition: service_completed_successfully
   bnetserver:
     stdin_open: true
     tty: true
@@ -77,3 +100,5 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      extract:
+        condition: service_completed_successfully
