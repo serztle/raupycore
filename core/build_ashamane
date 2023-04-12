@@ -1,0 +1,25 @@
+#!/bin/sh
+set -ex
+
+git clone -b legion --depth 1 https://github.com/AshamaneProject/AshamaneCore
+cp /Banner.cpp AshamaneCore/src/common/Banner.cpp
+cd AshamaneCore
+mkdir build
+cd build
+cmake -DOPENSSL_SSL_LIBRARIES=/usr/local/ssl/lib/libssl.so -DOPENSSL_CRYPTO_LIBRARIES=/usr/local/ssl/lib/libcrypto.so -DOPENSSL_INCLUDE_DIR=/usr/local/ssl/include ../
+make -j `nproc`
+make install
+
+strip -s /usr/local/bin/worldserver
+strip -s /usr/local/bin/bnetserver
+
+cd /
+mv AshamaneCore/sql .
+rm -rf AshamaneCore
+mkdir AshamaneCore
+mv sql AshamaneCore/
+
+wget https://github.com/AshamaneProject/AshamaneCore/releases/download/ADB_735.00/ADB_735.00.zip -O ac.zip
+unzip ac.zip
+mv *.sql /usr/local/bin/
+rm ac.zip

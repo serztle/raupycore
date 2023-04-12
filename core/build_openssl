@@ -1,0 +1,10 @@
+#!/bin/sh
+set -ex
+wget https://www.openssl.org/source/openssl-1.0.2s.tar.gz
+tar xvfz openssl-1.0.2s.tar.gz
+cd openssl-1.0.2s
+sh config shared --prefix=/usr/local/ssl
+make -j `nproc`
+make install
+rm -rf openssl-1.0.2s
+rm ../openssl-1.0.2s.tar.gz
