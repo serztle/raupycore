@@ -24,6 +24,7 @@ services:
       timeout: 10s
       retries: 40
   extract:
+    image: raupycore
     build:
       context: core/
     environment:
@@ -32,23 +33,10 @@ services:
       - ${CLIENT_DIRECTORY}:/pwd
       - ./env/etc:/usr/local/etc
       - ./env/logs:/usr/local/logs
-      - ./env/cameras:/usr/local/bin/cameras
-      - ./env/dbc:/usr/local/bin/dbc
-      - ./env/maps:/usr/local/bin/maps
-      - ./env/vmaps:/usr/local/bin/vmaps
-      - ./env/mmaps:/usr/local/bin/mmaps
-      - ./env/gt:/usr/local/bin/gt
-    ulimits:
-      nofile:
-        soft: 262144
-        hard: 262144
     working_dir: /pwd
     command: extract
   worldserver:
-    stdin_open: true
-    tty: true
-    build:
-      context: core/
+    image: raupycore
     restart: unless-stopped
     ports:
       - 127.0.0.1:8082:8082
@@ -61,16 +49,14 @@ services:
     volumes:
       - ./env/etc:/usr/local/etc
       - ./env/logs:/usr/local/logs
-      - ./env/cameras:/usr/local/bin/cameras
-      - ./env/dbc:/usr/local/bin/dbc
-      - ./env/maps:/usr/local/bin/maps
-      - ./env/vmaps:/usr/local/bin/vmaps
-      - ./env/mmaps:/usr/local/bin/mmaps
-      - ./env/gt:/usr/local/bin/gt
-    ulimits:
-      nofile:
-        soft: 262144
-        hard: 262144
+      - ${CLIENT_DIRECTORY}/cameras:/usr/local/bin/cameras
+      - ${CLIENT_DIRECTORY}/dbc:/usr/local/bin/dbc
+      - ${CLIENT_DIRECTORY}/maps:/usr/local/bin/maps
+      - ${CLIENT_DIRECTORY}/vmaps:/usr/local/bin/vmaps
+      - ${CLIENT_DIRECTORY}/mmaps:/usr/local/bin/mmaps
+      - ${CLIENT_DIRECTORY}/gt:/usr/local/bin/gt
+    stdin_open: true
+    tty: true
     working_dir: /usr/local/bin
     command: worldserver
     depends_on:
@@ -79,10 +65,7 @@ services:
       extract:
         condition: service_completed_successfully
   bnetserver:
-    stdin_open: true
-    tty: true
-    build:
-      context: core/
+    image: raupycore
     restart: unless-stopped
     ports:
       - 127.0.0.1:1119:1119
@@ -91,10 +74,8 @@ services:
       - LD_LIBRARY_PATH=/usr/local/mysql/lib:/usr/local/ssl/lib
     volumes:
       - ./env/etc:/usr/local/etc
-    ulimits:
-      nofile:
-        soft: 262144
-        hard: 262144
+    stdin_open: true
+    tty: true
     working_dir: /usr/local/bin
     command: bnetserver
     depends_on:

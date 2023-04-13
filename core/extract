@@ -1,33 +1,18 @@
 #!/bin/sh
 set -ex
 
-test -f .extracted && exit 0
+test -f .extracted.mapextractor || rm -rf maps
+test -f .extracted.mapextractor || rm -rf cameras
+test -f .extracted.mapextractor || rm -rf dbc
+test -f .extracted.mapextractor || mapextractor
+touch   .extracted.mapextractor
 
-rm -rf cameras
-rm -rf dbc
-rm -rf maps
-rm -rf vmaps
-rm -rf mmaps
-rm -rf gt
+test -f .extracted.vmap4 || rm -rf vmaps
+test -f .extracted.vmap4 || vmap4extractor
+test -f .extracted.vmap4 || vmap4assembler
+test -f .extracted.vmap4 || rm -rf Buildings
+touch   .extracted.vmap4
 
-mapextractor
-vmap4extractor
-vmap4assembler
-rm -rf Buildings
-mmaps_generator
-
-mv cameras/* /usr/local/bin/cameras/
-mv dbc/*     /usr/local/bin/dbc/
-mv maps/*    /usr/local/bin/maps/
-mv vmaps/*   /usr/local/bin/vmaps/
-mv mmaps/*   /usr/local/bin/mmaps/
-mv gt/*      /usr/local/bin/gt/
-
-rmdir cameras
-rmdir dbc
-rmdir maps
-rmdir vmaps
-rmdir mmaps
-rmdir gt
-
-touch .extracted
+test -f .extracted.mmaps_generator || rm -rf mmaps
+test -f .extracted.mmaps_generator || mmaps_generator
+touch   .extracted.mmaps_generator
