@@ -21,7 +21,7 @@
 
 void Trinity::Banner::Show(char const* applicationName, void(*log)(char const* text), void(*logExtraInfo)())
 {
-    log(Trinity::StringFormat("%s (%s)", GitRevision::GetFullVersion(), applicationName).c_str());
+    log(Trinity::StringFormat("TrinityCore rev. b3ec0305caba 2018-12-18 08:54:11 +0100 (legion branch) (Unix, RelWithDebInfo, Static) (%s)", GitRevision::GetFullVersion(), applicationName).c_str());
     log("<Ctrl-C> to stop.\n");
     log("");
     log("    ____                                      ______                      ");
