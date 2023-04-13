@@ -25,3 +25,6 @@ RUN /install_runtime
 COPY --from=builder /AshamaneCore /AshamaneCore
 COPY --from=builder /usr/local /usr/local
 COPY extract /usr/local/bin/extract
+RUN chmod a+x /usr/local/bin/extract
+RUN useradd -m trinity
+USER trinity
