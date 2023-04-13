@@ -19,10 +19,9 @@ FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update -yq && \
-    apt-get install -yq libatomic1 libreadline7 libboost-system1.65.1 libboost-filesystem1.65.1 libboost-program-options1.65.1 libboost-iostreams1.65.1 libboost-thread1.65.1 && \
-    rm -rf /var/lib/apt/lists/*
 RUN mkdir /usr/local/logs
+COPY install_runtime /install_runtime
+RUN /install_runtime
 COPY --from=builder /AshamaneCore /AshamaneCore
 COPY --from=builder /usr/local /usr/local
 COPY extract /usr/local/bin/extract
