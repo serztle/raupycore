@@ -51,7 +51,14 @@ Arch linux based distributions:
 
 ## Setup
 
-Open the `.env` file and add the path to your client folder, otherwise the first `docker compose` command will fail.
+Copy the file `.env.dist` to `.env`:
+
+```sh
+$ cp .env.dist .env
+```
+
+And add the path to your client to this line `CLIENT_DIRECTORY=`.
+After that execute the following commands:
 
 ```sh
 $ git clone http://github.com/raupycore/raupycore
