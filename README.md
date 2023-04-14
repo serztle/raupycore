@@ -64,7 +64,7 @@ After that execute the following commands:
 $ git clone http://github.com/raupycore/raupycore
 $ cd raupycore          # Do not change the directory name, otherwise "raupycore" in the last command must be changed to the new name!
 $ docker compose build  # It will build the core (depending on your computer, this will take around 20 minutes)
-$ docker compose up     # The first time:
+$ docker compose up     # The first time
                         # - it will extract data from the game (this will take over 1 hour) and
                         # - populate the database (this will take around 2 minutes)
 ```
