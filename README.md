@@ -27,20 +27,7 @@ You need to install either Docker For Windows or install a Linux distribution in
 * [How to run an Ubuntu Desktop virtual machine using VirtualBox 7](https://ubuntu.com/tutorials/how-to-run-ubuntu-desktop-on-a-virtual-machine-using-virtualbox#1-overview)
 
 *Hint*: Using Docker under Windows is not a smooth experience (keyword:
-vmmem.exe high memory usage), at least it was in our case, we recommand using a
-VM. If you use a VM you should forward the following ports to your Host:
-
-- 1119
-- 3443
-- 7878
-- 8081
-- 8082
-- 8085
-- 8086
-- 3306 *(optional)*
-
-TODO: add screenshot from virtualbox
-TODO: There is a problem: How to get the game files into the VM, without copying them? Use a shared folder?
+vmmem.exe high memory usage), at least it was in our case.
 
 ### Linux
 
